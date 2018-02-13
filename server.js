@@ -92,10 +92,11 @@ app.post('/addQ',function(req,res){
 });
 
 app.get('/quotes',function(req,res){
-    Quote.find({},function(err,results){
+    Quote.find({}).sort({createdAt:'desc'}).exec(function(err,results){
         if(err)
             console.log(err);
         else{
+            console.log(results);
             res.render('quotes',{data:results});
         }
     })
