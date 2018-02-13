@@ -8,18 +8,6 @@ app.use(express.static(path.join(__dirname,'./static')));
 app.set('views',path.join(__dirname,'./views'));
 app.set('view engine','ejs');
 
-app.get('/',function(req,res){
-    User.find({},function(err,users){
-        if(err)
-            console.log(err);
-        else{
-            console.log(users);
-            res.render('index',{u:users});
-        }          
-    })   
-});
-
-
 app.listen(6789,function(){
     console.log('listening on port 6789');
 })
@@ -27,23 +15,88 @@ app.listen(6789,function(){
 //*************** DB stuff ****************/
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/basic_mongoose');
-
-var UserSchema = new mongoose.Schema({
-    name:String,
-    age:Number
-})
-mongoose.model('User',UserSchema);
-var User = mongoose.model('User')
 mongoose.Promise = global.Promise;
 
+var UserSchema = new mongoose.Schema({
+    name:{type:String,required:true,maxlength:50},
+    age:{type:Number,required:true,min:1,max:150}
+},{timestamps:true});
+
+mongoose.model('User',UserSchema);
+var User = mongoose.model('User')
+
+
+var QuoteSchema = new mongoose.Schema({
+    user:{ type:mongoose.Schema.ObjectId,ref:'User'},
+    quote:{type:String,required:true,maxlength:500}
+},{timestamps:true});
+
+mongoose.model('Quote',QuoteSchema);
+var Quote = mongoose.model('Quote')
+
+//***************************************/
+app.get('/',function(req,res){
+    User.find({},function(err,users){
+            if(err)
+                console.log(err);
+            else{
+                res.render('index',{u:users});
+            }          
+        })    
+});
+
+
 app.post('/users',function(req,res){
-    console.log(req.body);
-    var user = new User({name:req.body.name,age:req.body.age});
-    user.save(function(err){
+    var ruser = null; 
+    User.find({name:req.body.name},function(err,user){
+        if(user.length==0){
+            console.log(err);
+            ruser = new User({name:req.body.name,age:req.body.age});
+                ruser.save(function(err){
+                if(err)
+                    console.log(err);
+                else
+                    console.log('successfully added a user!');
+            })
+        }
+        else{
+            console.log('find '+user);
+        }          
+    }) 
+    res.redirect('/add');
+});
+
+app.get('/add',function(req,res){
+    res.render('add')
+});
+
+app.post('/addQ',function(req,res){
+    User.find({name:req.body.name},function(err,user){
         if(err)
             console.log(err);
-        else
-            console.log('successfully added a user!');
+        else{
+            console.log(user);
+            var id=user[0]._id;
+            console.log(id);
+            var quote = new Quote({user:id,quote:req.body.des})
+            quote.save(function(err){
+                if(err)
+                    console.log(err)
+                else{
+                    console.log('successfully added a quote!');
+                    res.redirect('/quotes');
+                }
+            })
+        }
+    });
+});
+
+app.get('/quotes',function(req,res){
+    Quote.find({},function(err,results){
+        if(err)
+            console.log(err);
+        else{
+            res.render('quotes',{data:results});
+        }
     })
-    res.redirect('/');
 });

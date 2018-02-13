@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">  
+        <title>Welcome</title>
+        <meta name="description" content="fill_me_in" >
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css " rel="stylesheet">  
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <!-- <link rel="stylesheet" href="./css/styles.css"> -->
+   </head>
+   <body>
+        <div class="jumbotron" align="center">
+                <h1 id='numberTitle' class='display-4' style="text-align:center">Here are the awesome quotes</h1>
+        </div>
+        <div class="col-md-6">
+                <% for(var i=0; i<data.length; i++) {%>
+                <hr>
+                <h3><%= data[i].quote%></h3>
+                <span><h5><%= data[i].user%></span><span><h5> at <%= data[i].createdAt%></h5></span>
+                <% } %>
+        </div>       
+   </body>
+</html>
