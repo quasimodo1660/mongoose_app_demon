@@ -35,8 +35,7 @@
                     </div>   
                     <div class="col-md-6">
                                 <% for(var i=0; i<u.length; i++) {%>
-                                <h5>User<%= i+1%>'s name: <%= u[i].name%></h5>
-                                <h5>User<%= i+1%>'s age: <%= u[i].age%></h5>
+                                <a href='/user/<%= u[i]._id%>'><h5>User<%= i+1%>'s name: <%= u[i].name%></h5></a>
                                 <% } %>
                         </div>       
                 </div>          

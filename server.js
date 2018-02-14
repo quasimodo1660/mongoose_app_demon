@@ -101,3 +101,46 @@ app.get('/quotes',function(req,res){
         }
     })
 });
+
+app.get('/user/:id',function(req,res){
+    User.find({_id:req.params.id},function(err,user){
+        if(err)
+            console.log(err);
+        else{
+            console.log(user);
+            res.render('userinfo',{data:user});
+        }
+    })
+});
+
+app.post('/user/destroy',function(req,res){
+    console.log(req.body.did);
+    User.remove({_id:req.body.did},function(err,results){
+        if(err)
+            console.log(err);
+        else{
+            res.redirect('/');
+        }
+    });  
+})
+
+app.get('/user/edit/:id',function(req,res){
+    User.find({_id:req.params.id},function(err,user){
+        if(err)
+            console.log(err);
+        else{
+            console.log(user);
+            res.render('edit',{data:user});
+        }
+    })
+});
+
+app.post('/users/edit',function(req,res){
+    User.update({_id:req.body.did},{name:req.body.name,age:req.body.age},function(err,results){
+        if(err)
+            console.log(err);
+        else{
+            res.redirect('/');
+        }
+    })
+})
