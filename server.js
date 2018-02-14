@@ -3,14 +3,12 @@ var app = express();
 
 var bodyParser=require('body-parser');
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json());
 var path = require('path');
 app.use(express.static(path.join(__dirname,'./static')));
 app.set('views',path.join(__dirname,'./views'));
 app.set('view engine','ejs');
 
-app.listen(6789,function(){
-    console.log('listening on port 6789');
-})
 
 //*************** DB stuff ****************/
 var mongoose = require('mongoose');
@@ -155,3 +153,66 @@ app.post('/users/edit',function(req,res){
         }
     })
 })
+
+// ================ API ===================
+app.get('/api',(req,res)=>{
+    User.find({},function(err,users){
+        if(err){
+            console.log(err);
+            res.json({message:'Error',error:err});
+        }     
+        else{
+            res.json({message:'Success',data:users});
+        }          
+    })    
+})
+
+app.get('/api/:name',(req,res)=>{
+    User.find({_id:req.params.name},function(err,user){
+        if(err){
+            console.log(err);
+            res.json({message:'Error',error:err});
+        }            
+        else{
+            console.log(user);
+            res.json({message:'Success',data:user});
+        }
+    })
+})
+
+app.get('/api/new/:name/:age',(req,res)=>{
+    user = new User(req.params);
+    user.save(function(err){
+        if(err){
+            console.log(err);
+            res.json({message:'Error',error:err});
+        }            
+        else{
+            res.json({message:'Success add a user'});
+        } 
+    })
+    
+})
+
+app.get('/api/remove/:name',(req,res)=>{
+    User.remove({name:req.params.name},function(err,results){
+        if(err){
+            console.log(err);
+            res.json({message:'Error',error:err});
+        }           
+        else{
+            res.redirect('/api');
+        }
+    });  
+})
+
+
+
+
+
+
+
+app.listen(6789,function(){
+    console.log('listening on port 6789');
+})
+
