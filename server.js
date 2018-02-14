@@ -19,7 +19,8 @@ mongoose.Promise = global.Promise;
 
 var UserSchema = new mongoose.Schema({
     name:{type:String,required:true,maxlength:50},
-    age:{type:Number,required:true,min:1,max:150}
+    age:{type:Number,required:true,min:1,max:150},
+    reviews:[{type:mongoose.Schema.Types.ObjectId,ref:'Review'}]
 },{timestamps:true});
 
 mongoose.model('User',UserSchema);
@@ -33,6 +34,16 @@ var QuoteSchema = new mongoose.Schema({
 
 mongoose.model('Quote',QuoteSchema);
 var Quote = mongoose.model('Quote')
+
+
+var ReviewSchema = new mongoose.Schema({
+    _user:{type:mongoose.Schema.Types.ObjectId,ref:'User'},
+    text:{type:String,required:true},
+},{timestamps:true});
+
+
+var Review=mongoose.model('Review',ReviewSchema);
+
 
 //***************************************/
 app.get('/',function(req,res){
